@@ -19,11 +19,15 @@ def main():
             print("Thank you for using Calculator Master!")
             break
         elif choice == "1":
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
 
-            result = addition(num1, num2)
-            print("Result:", result)
+                result = addition(num1, num2)
+                print("Result:", result)
+
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
 
         elif choice in ["2", "3", "4"]:
             print("This operation is not implemented yet.")
