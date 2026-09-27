@@ -1,7 +1,9 @@
 
 # Calculator Master
 # S-ITNT415 Midterm Summative Assessment
-
+def addition(a, b):
+    return a + b
+    
 def main():
     while True:
         print("\n===== CALCULATOR MASTER =====")
@@ -16,7 +18,18 @@ def main():
         if choice == "5":
             print("Thank you for using Calculator Master!")
             break
-        elif choice in ["1", "2", "3", "4"]:
+        elif choice == "1":
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
+
+                result = addition(num1, num2)
+                print("Result:", result)
+
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
+
+        elif choice in ["2", "3", "4"]:
             print("This operation is not implemented yet.")
         else:
             print("Invalid choice. Please try again.")
