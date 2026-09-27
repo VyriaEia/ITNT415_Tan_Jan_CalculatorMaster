@@ -62,11 +62,18 @@ def main():
                 print("Invalid input. Please enter numbers only.")
 
         elif choice == "4":
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
 
-            result = division(num1, num2)
-            print("Result:", result)
+                result = division(num1, num2)
+                print("Result:", result)
+
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
+
+            except ZeroDivisionError:
+                print("Error: Cannot divide by zero.")
         else:
             print("Invalid choice. Please try again.")
 
