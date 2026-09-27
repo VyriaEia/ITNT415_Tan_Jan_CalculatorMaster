@@ -47,11 +47,15 @@ def main():
                 print("Invalid input. Please enter numbers only.")
 
         elif choice == "3":
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
 
-            result = multiplication(num1, num2)
-            print("Result:", result)
+                result = multiplication(num1, num2)
+                print("Result:", result)
+
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
 
         elif choice == "4":
             print("This operation is not implemented yet.")
