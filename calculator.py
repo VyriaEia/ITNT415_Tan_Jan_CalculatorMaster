@@ -9,6 +9,10 @@ def subtraction(a, b):
 
 def multiplication(a, b):
     return a * b
+
+def division(a, b):
+    return a / b
+
     
 def main():
     while True:
@@ -58,12 +62,13 @@ def main():
                 print("Invalid input. Please enter numbers only.")
 
         elif choice == "4":
-            print("This operation is not implemented yet.")
+            num1 = float(input("Enter first number: "))
+            num2 = float(input("Enter second number: "))
+
+            result = division(num1, num2)
+            print("Result:", result)
         else:
             print("Invalid choice. Please try again.")
-
-        
-
 
 if __name__ == "__main__":
     main()
