@@ -6,6 +6,9 @@ def addition(a, b):
 
 def subtraction(a, b):
     return a - b
+
+def multiplication(a, b):
+    return a * b
     
 def main():
     while True:
@@ -43,7 +46,18 @@ def main():
             except ValueError:
                 print("Invalid input. Please enter numbers only.")
 
-        elif choice in ["3", "4"]:
+        elif choice == "3":
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
+
+                result = multiplication(num1, num2)
+                print("Result:", result)
+
+            except ValueError:
+                print("Invalid input. Please enter numbers only.")
+
+        elif choice == "4":
             print("This operation is not implemented yet.")
         else:
             print("Invalid choice. Please try again.")
