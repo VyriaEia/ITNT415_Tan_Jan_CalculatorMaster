@@ -67,7 +67,7 @@ The calculator was developed incrementally using Git and GitHub.
 
 The final application provides a menu-driven terminal interface where users can perform calculations and access additional calculator tools.
 
-![Calculator Master Sample Execution](output.png)
+![Calculator Master Sample Execution](sample-execution.png)
 
 ## Technologies Used
 
