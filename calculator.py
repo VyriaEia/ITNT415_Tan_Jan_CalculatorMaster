@@ -8,6 +8,9 @@ from datetime import datetime
 # ============================================================
 
 calculation_history = []
+calculator_memory = 0.0
+last_result = None
+
 operation_counts = {
     "Addition": 0,
     "Subtraction": 0,
@@ -38,21 +41,35 @@ def divide(num1, num2):
 
 # ---------------------- INPUT HANDLING ------------------------
 
-def get_number(prompt):
-    """Continuously asks the user until a valid number is entered."""
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("\n[ERROR] Invalid input. Please enter a valid number.")
-
-
 def format_number(number):
-    """Removes unnecessary .0 from whole-number results."""
     if float(number).is_integer():
         return str(int(number))
 
     return f"{number:.4f}".rstrip("0").rstrip(".")
+
+
+def get_number(prompt):
+    """
+    Accepts regular numbers or ANS to reuse the previous result.
+    """
+    while True:
+        user_input = input(prompt).strip()
+
+        if user_input.lower() == "ans":
+            if last_result is None:
+                print("[ERROR] No previous result is available yet.")
+                continue
+
+            print(f"Using ANS = {format_number(last_result)}")
+            return last_result
+
+        try:
+            return float(user_input)
+        except ValueError:
+            print(
+                "[ERROR] Invalid input. Enter a valid number "
+                "or type ANS."
+            )
 
 
 # ---------------------- HISTORY SYSTEM ------------------------
@@ -75,9 +92,9 @@ def save_calculation(num1, symbol, num2, result, operation):
 
 
 def view_history():
-    print("\n" + "=" * 55)
-    print("                 CALCULATION HISTORY")
-    print("=" * 55)
+    print("\n" + "=" * 60)
+    print("                    CALCULATION HISTORY")
+    print("=" * 60)
 
     if not calculation_history:
         print("No calculations have been performed yet.")
@@ -89,7 +106,7 @@ def view_history():
                 f"{record['time']}"
             )
 
-    print("=" * 55)
+    print("=" * 60)
     input("\nPress Enter to return to the main menu...")
 
 
@@ -118,46 +135,119 @@ def clear_history():
     input("\nPress Enter to continue...")
 
 
+# ---------------------- MEMORY SYSTEM -------------------------
+
+def memory_menu():
+    global calculator_memory
+
+    while True:
+        print("\n" + "=" * 60)
+        print("                      MEMORY SYSTEM")
+        print("=" * 60)
+        print(f"Current Memory: {format_number(calculator_memory)}")
+        print()
+        print("  1. M+  Add value to memory")
+        print("  2. M-  Subtract value from memory")
+        print("  3. MR  Recall memory")
+        print("  4. MC  Clear memory")
+        print("  5. Return to Main Menu")
+        print("=" * 60)
+
+        choice = input("Select an option [1-5]: ").strip()
+
+        if choice == "1":
+            value = get_number("Enter value to add to memory: ")
+            calculator_memory += value
+            print(
+                f"Memory updated: "
+                f"{format_number(calculator_memory)}"
+            )
+
+        elif choice == "2":
+            value = get_number(
+                "Enter value to subtract from memory: "
+            )
+            calculator_memory -= value
+            print(
+                f"Memory updated: "
+                f"{format_number(calculator_memory)}"
+            )
+
+        elif choice == "3":
+            print(
+                f"Memory Recall (MR): "
+                f"{format_number(calculator_memory)}"
+            )
+
+        elif choice == "4":
+            calculator_memory = 0.0
+            print("Memory successfully cleared.")
+
+        elif choice == "5":
+            break
+
+        else:
+            print("[ERROR] Please select an option from 1 to 5.")
+
+
 # ---------------------- STATISTICS ----------------------------
 
 def show_statistics():
     total = len(calculation_history)
 
-    print("\n" + "=" * 55)
-    print("                CALCULATOR STATISTICS")
-    print("=" * 55)
+    print("\n" + "=" * 60)
+    print("                   CALCULATOR STATISTICS")
+    print("=" * 60)
     print(f"Total calculations performed : {total}")
     print(f"Addition operations           : {operation_counts['Addition']}")
     print(f"Subtraction operations        : {operation_counts['Subtraction']}")
     print(f"Multiplication operations     : {operation_counts['Multiplication']}")
     print(f"Division operations           : {operation_counts['Division']}")
-    print("=" * 55)
+
+    if last_result is None:
+        print("Previous result (ANS)          : None")
+    else:
+        print(
+            f"Previous result (ANS)          : "
+            f"{format_number(last_result)}"
+        )
+
+    print(
+        f"Calculator memory              : "
+        f"{format_number(calculator_memory)}"
+    )
 
     if total > 0:
         most_used = max(operation_counts, key=operation_counts.get)
 
         if operation_counts[most_used] > 0:
-            print(f"Most frequently used operation: {most_used}")
+            print(f"Most used operation            : {most_used}")
 
+    print("=" * 60)
     input("\nPress Enter to return to the main menu...")
 
 
 # ---------------------- INFORMATION ---------------------------
 
 def show_about():
-    print("\n" + "=" * 55)
-    print("                  ABOUT CALCULATOR")
-    print("=" * 55)
+    print("\n" + "=" * 60)
+    print("                     ABOUT CALCULATOR")
+    print("=" * 60)
     print("Application : Calculator Master")
     print("Developer   : Jan Rhodes P. Tan")
     print("Course      : S-ITNT415")
     print("Section     : BIT42")
-    print("Version     : 2.0")
+    print("Version     : 2.1")
     print()
-    print("A menu-driven Python calculator developed using")
-    print("Git feature branches, commits, pull requests,")
-    print("merge operations, validation, and error handling.")
-    print("=" * 55)
+    print("Features:")
+    print("- Four fundamental arithmetic operations")
+    print("- Input validation and error handling")
+    print("- Calculation history with timestamps")
+    print("- Operation usage statistics")
+    print("- ANS previous-result functionality")
+    print("- Calculator memory (M+, M-, MR, MC)")
+    print("- Continuous menu-driven interface")
+    print("=" * 60)
 
     input("\nPress Enter to return to the main menu...")
 
@@ -165,22 +255,26 @@ def show_about():
 # ---------------------- CALCULATION ENGINE --------------------
 
 def perform_calculation(operation_name, symbol, function):
-    print("\n" + "-" * 55)
+    global last_result
+
+    print("\n" + "-" * 60)
     print(f"{operation_name.upper()} OPERATION")
-    print("-" * 55)
+    print("-" * 60)
+    print("Tip: Type ANS to reuse your previous result.\n")
 
     num1 = get_number("Enter the first number : ")
     num2 = get_number("Enter the second number: ")
 
     try:
         result = function(num1, num2)
+        last_result = result
 
-        print("\n" + "-" * 55)
+        print("\n" + "-" * 60)
         print(
             f"RESULT: {format_number(num1)} {symbol} "
             f"{format_number(num2)} = {format_number(result)}"
         )
-        print("-" * 55)
+        print("-" * 60)
 
         save_calculation(
             num1,
@@ -194,6 +288,9 @@ def perform_calculation(operation_name, symbol, function):
             f"Calculation #{len(calculation_history)} "
             "saved to session history."
         )
+        print(
+            f"ANS updated to {format_number(last_result)}."
+        )
 
     except ZeroDivisionError as error:
         print(f"\n[ERROR] {error}")
@@ -204,10 +301,10 @@ def perform_calculation(operation_name, symbol, function):
 # ---------------------- MENU SYSTEM ---------------------------
 
 def display_menu():
-    print("\n" + "=" * 55)
-    print("                   CALCULATOR MASTER")
-    print("               Jan Rhodes P. Tan - BIT42")
-    print("=" * 55)
+    print("\n" + "=" * 60)
+    print("                     CALCULATOR MASTER")
+    print("                 Jan Rhodes P. Tan - BIT42")
+    print("=" * 60)
 
     print("\n[BASIC OPERATIONS]")
     print("  1. Addition")
@@ -219,16 +316,22 @@ def display_menu():
     print("  5. View Calculation History")
     print("  6. Clear Calculation History")
     print("  7. Calculator Statistics")
-    print("  8. About Calculator")
+    print("  8. Memory System")
+    print("  9. About Calculator")
 
-    print("\n  9. Exit")
-    print("=" * 55)
+    print("\n  0. Exit")
+    print("=" * 60)
+
+    if last_result is not None:
+        print(f"ANS: {format_number(last_result)}")
+
+    print(f"Memory: {format_number(calculator_memory)}")
 
 
 def main():
     while True:
         display_menu()
-        choice = input("Select an option [1-9]: ").strip()
+        choice = input("Select an option [0-9]: ").strip()
 
         if choice == "1":
             perform_calculation("Addition", "+", add)
@@ -252,24 +355,25 @@ def main():
             show_statistics()
 
         elif choice == "8":
-            show_about()
+            memory_menu()
 
         elif choice == "9":
-            print("\n" + "=" * 55)
+            show_about()
+
+        elif choice == "0":
+            print("\n" + "=" * 60)
             print("Thank you for using Calculator Master.")
             print("Program terminated successfully.")
-            print("=" * 55)
+            print("=" * 60)
             break
 
         else:
             print(
                 "\n[ERROR] Invalid menu selection. "
-                "Please choose from 1 to 9."
+                "Please choose from 0 to 9."
             )
             input("\nPress Enter to continue...")
 
-
-# ---------------------- PROGRAM ENTRY POINT -------------------
 
 if __name__ == "__main__":
     main()
